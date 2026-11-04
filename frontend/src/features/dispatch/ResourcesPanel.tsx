@@ -8,9 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 function Schedule({ current, next, onOpen }: { current: AssignmentRef | null; next: AssignmentRef | null; onOpen: (id: number) => void }) {
-  if (!current && !next) return <div className="text-xs text-muted-foreground">No active assignments</div>
+  if (!current && !next) return <div className="text-sm text-muted-foreground">No active assignments</div>
   return (
-    <div className="space-y-0.5 text-xs">
+    <div className="space-y-0.5 text-sm">
       {current && (
         <div>
           <span className="text-muted-foreground">On job: </span>
@@ -40,7 +40,7 @@ export function ResourcesPanel({ onOpenAssignment }: { onOpenAssignment: (id: nu
   return (
     <Card data-testid="resources-panel">
       <CardHeader>
-        <CardTitle className="text-base">Resources</CardTitle>
+        <CardTitle className="text-lg">Resources</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="drivers">
@@ -62,8 +62,8 @@ export function ResourcesPanel({ onOpenAssignment }: { onOpenAssignment: (id: nu
                 <li key={d.id} className="py-2.5" data-testid={`driver-row-${d.driverCode}`}>
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-sm font-medium">{d.fullName}</div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-base font-medium">{d.fullName}</div>
+                      <div className="text-sm text-muted-foreground">
                         {d.driverCode} · Class {d.licenceClass} · {d.phone}
                       </div>
                     </div>
@@ -89,10 +89,10 @@ export function ResourcesPanel({ onOpenAssignment }: { onOpenAssignment: (id: nu
                 <li key={v.id} className="py-2.5" data-testid={`vehicle-row-${v.vehicleCode}`}>
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="text-sm font-medium">
-                        {v.registrationNumber} <span className="font-mono text-xs font-normal text-muted-foreground">{v.vehicleCode}</span>
+                      <div className="text-base font-medium">
+                        {v.registrationNumber} <span className="font-mono text-sm font-normal text-muted-foreground">{v.vehicleCode}</span>
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className="text-sm text-muted-foreground">
                         {vehicleTypeLabel[v.vehicleType]} · {formatKg(v.maxPayloadKg)} · Class {v.minimumLicenceClass}+
                       </div>
                     </div>
