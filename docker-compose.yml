@@ -1,0 +1,49 @@
+# Northline Freight TMS - local development stack.
+#   cp .env.example .env
+#   docker compose up -d db          -> PostgreSQL only (run API and web from source)
+#   docker compose up --build -d     -> full stack: db + api + web
+# Values come from .env; the defaults below match .env.example.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: northline-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-northline}
+      POSTGRES_USER: ${POSTGRES_USER:-northline}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-northline_dev}
+      TZ: UTC
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - northline-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-northline} -d ${POSTGRES_DB:-northline}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: ./backend
+    container_name: northline-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ConnectionStrings__Northline: "Host=db;Port=5432;Database=${POSTGRES_DB:-northline};Username=${POSTGRES_USER:-northline};Password=${POSTGRES_PASSWORD:-northline_dev}"
+      Jwt__SigningKey: ${JWT_SIGNING_KEY:-development-only-signing-key-not-for-production-0001}
+      Seed__DevPassword: ${SEED_DEV_PASSWORD:-Northline!Dev2026}
+    ports:
+      - "${API_PORT:-5080}:8080"
+
+  web:
+    build: ./frontend
+    container_name: northline-web
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-8080}:80"
+
+volumes:
+  northline-db:
