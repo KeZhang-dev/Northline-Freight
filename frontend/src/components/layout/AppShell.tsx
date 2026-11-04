@@ -48,7 +48,7 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
       <div className={cn('flex h-14 items-center border-b border-sidebar-border', collapsed ? 'justify-center' : 'px-4')}>
         {collapsed ? <img src="/favicon.png" alt="Northline Freight" className="size-6" data-testid="brand-logo" /> : <Brand />}
       </div>
-      <nav className="flex-1 space-y-0.5 overflow-y-auto p-2" aria-label="Main navigation">
+      <nav className={cn('flex-1 overflow-y-auto p-2', collapsed ? 'space-y-1' : 'space-y-0.5')} aria-label="Main navigation">
         {modules.map((m) => {
           const link = (
             <NavLink
@@ -58,20 +58,24 @@ function Sidebar({ collapsed }: { collapsed: boolean }) {
               aria-label={collapsed ? m.title : undefined}
               className={({ isActive }) =>
                 cn(
-                  'flex items-center gap-3 whitespace-nowrap rounded-md py-2 text-sm transition-colors',
-                  collapsed ? 'justify-center px-0' : 'px-3',
+                  'flex items-center gap-3 whitespace-nowrap rounded-md text-sm transition-colors',
+                  collapsed ? 'justify-center py-2.5' : 'px-3 py-2',
                   'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
                   isActive && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
                 )
               }
             >
-              <m.icon className="size-4 shrink-0" />
+              <m.icon className={cn('shrink-0', collapsed ? 'size-5' : 'size-4')} />
               {!collapsed && <span className="truncate">{m.title}</span>}
             </NavLink>
           )
+          // The trigger wraps the link in a div: Radix's Slot would otherwise merge NavLink's
+          // className function as a string and drop its styles.
           return collapsed ? (
             <Tooltip key={m.key}>
-              <TooltipTrigger asChild>{link}</TooltipTrigger>
+              <TooltipTrigger asChild>
+                <div>{link}</div>
+              </TooltipTrigger>
               <TooltipContent side="right">{m.title}</TooltipContent>
             </Tooltip>
           ) : (
