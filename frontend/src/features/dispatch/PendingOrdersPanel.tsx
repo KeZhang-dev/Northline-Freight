@@ -43,9 +43,9 @@ export function PendingOrdersPanel({ onAssign, canWrite }: { onAssign: (orderId:
     <Card data-testid="pending-orders-panel">
       <CardHeader className="gap-3">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">Pending transport orders</CardTitle>
+          <CardTitle className="text-lg">Pending transport orders</CardTitle>
           {data && (
-            <span className="text-xs text-muted-foreground" data-testid="pending-orders-count">
+            <span className="text-sm text-muted-foreground" data-testid="pending-orders-count">
               {data.totalCount} {data.totalCount === 1 ? 'order' : 'orders'}
             </span>
           )}
@@ -119,7 +119,7 @@ export function PendingOrdersPanel({ onAssign, canWrite }: { onAssign: (orderId:
               <TableRow>
                 <TableHead>Order</TableHead>
                 <TableHead>Route</TableHead>
-                <TableHead className="text-right">Weight</TableHead>
+                <TableHead>Weight</TableHead>
                 <TableHead>Pickup – deadline</TableHead>
                 <TableHead>Priority</TableHead>
                 <TableHead>Dispatch</TableHead>
@@ -130,30 +130,30 @@ export function PendingOrdersPanel({ onAssign, canWrite }: { onAssign: (orderId:
               {data.items.map((o) => (
                 <TableRow key={o.id} data-testid={`order-row-${o.orderNumber}`} data-eligible={o.isEligible}>
                   <TableCell>
-                    <div className="font-mono text-xs font-semibold">{o.orderNumber}</div>
-                    <div className="max-w-44 truncate text-xs text-muted-foreground" title={o.customerName}>
+                    <div className="font-mono text-sm font-semibold">{o.orderNumber}</div>
+                    <div className="max-w-44 truncate text-sm text-muted-foreground" title={o.customerName}>
                       {o.customerName}
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs">
+                  <TableCell className="text-sm">
                     <div>{o.pickupLocation}</div>
                     <div className="text-muted-foreground">→ {o.deliveryLocation}</div>
                   </TableCell>
-                  <TableCell className="text-right text-xs tabular-nums">{formatKg(o.cargoWeightKg)}</TableCell>
-                  <TableCell className="text-xs whitespace-nowrap">{formatRange(o.pickupAt, o.deliveryDeadline)}</TableCell>
+                  <TableCell className="text-sm whitespace-nowrap tabular-nums">{formatKg(o.cargoWeightKg)}</TableCell>
+                  <TableCell className="text-sm whitespace-nowrap">{formatRange(o.pickupAt, o.deliveryDeadline)}</TableCell>
                   <TableCell>
                     <PriorityBadge priority={o.priority} />
                   </TableCell>
                   <TableCell>
                     {o.isEligible ? (
-                      <span className="inline-flex items-center gap-1 text-xs text-emerald-700" data-testid="order-eligible">
-                        <CheckCircle2 className="size-3.5" /> Ready
+                      <span className="inline-flex items-center gap-1 text-sm text-emerald-700" data-testid="order-eligible">
+                        <CheckCircle2 className="size-4" /> Ready
                       </span>
                     ) : (
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <span className="inline-flex cursor-help items-center gap-1 text-xs text-red-700" data-testid="order-ineligible">
-                            <XCircle className="size-3.5" /> Not eligible
+                          <span className="inline-flex cursor-help items-center gap-1 text-sm text-red-700" data-testid="order-ineligible">
+                            <XCircle className="size-4" /> Not eligible
                           </span>
                         </TooltipTrigger>
                         <TooltipContent className="max-w-xs">

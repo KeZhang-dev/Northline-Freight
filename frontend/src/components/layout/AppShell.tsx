@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 function Brand() {
-  return <img src="/logo.png" alt="Northline Freight" className="h-6 w-auto" data-testid="brand-logo" />
+  return <img src="/logo.png" alt="Northline Freight" className="h-5 w-auto" data-testid="brand-logo" />
 }
 
 function Sidebar() {
