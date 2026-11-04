@@ -93,5 +93,7 @@
   }
   html {
     @apply font-sans;
+    /* Base size for the whole app; Tailwind sizes are in rem, so everything scales with it. */
+    font-size: 17px;
   }
 }

@@ -5,20 +5,17 @@ import { modules } from '@/modules'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
-function Brand({ compact = false }: { compact?: boolean }) {
+function Brand() {
   return (
     <div className="flex items-center gap-2.5">
       <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
         <Truck className="size-4.5" />
       </div>
-      {!compact && (
-        <div className="leading-tight">
-          <div className="text-sm font-semibold text-sidebar-accent-foreground">Northline Freight</div>
-          <div className="text-[11px] text-sidebar-foreground/70">Transport Management</div>
-        </div>
-      )}
+      <div className="leading-tight">
+        <div className="text-sm font-semibold text-sidebar-accent-foreground">Northline Freight</div>
+        <div className="text-[11px] text-sidebar-foreground/70">Transport Management</div>
+      </div>
     </div>
   )
 }
@@ -26,48 +23,32 @@ function Brand({ compact = false }: { compact?: boolean }) {
 function Sidebar() {
   return (
     <aside
-      className="sticky top-0 flex h-screen w-16 shrink-0 flex-col bg-sidebar text-sidebar-foreground lg:w-60"
+      className="sticky top-0 flex h-screen w-60 shrink-0 flex-col bg-sidebar text-sidebar-foreground"
       data-testid="sidebar"
     >
       <div className="flex h-14 items-center border-b border-sidebar-border px-4">
-        <span className="hidden lg:block">
-          <Brand />
-        </span>
-        <span className="lg:hidden">
-          <Brand compact />
-        </span>
+        <Brand />
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto p-2" aria-label="Main navigation">
         {modules.map((m) => (
-          <Tooltip key={m.key}>
-            <TooltipTrigger asChild>
-              <NavLink
-                to={m.path}
-                data-testid={`nav-${m.key}`}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
-                    'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-                    isActive && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
-                  )
-                }
-              >
-                <m.icon className="size-4 shrink-0" />
-                <span className="hidden flex-1 truncate lg:block">{m.title}</span>
-                {!m.implemented && (
-                  <span className="hidden rounded bg-sidebar-border px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-sidebar-foreground/70 lg:block">
-                    Soon
-                  </span>
-                )}
-              </NavLink>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="lg:hidden">
-              {m.title}
-            </TooltipContent>
-          </Tooltip>
+          <NavLink
+            key={m.key}
+            to={m.path}
+            data-testid={`nav-${m.key}`}
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-3 whitespace-nowrap rounded-md px-3 py-2 text-sm transition-colors',
+                'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                isActive && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
+              )
+            }
+          >
+            <m.icon className="size-4 shrink-0" />
+            <span className="truncate">{m.title}</span>
+          </NavLink>
         ))}
       </nav>
-      <div className="hidden border-t border-sidebar-border p-4 text-[11px] text-sidebar-foreground/60 lg:block">
+      <div className="border-t border-sidebar-border p-4 text-[11px] text-sidebar-foreground/60">
         Northline Freight &amp; Logistics Ltd
         <br />
         Auckland, New Zealand
