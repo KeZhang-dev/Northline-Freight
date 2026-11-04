@@ -39,7 +39,6 @@ export function DispatchPage() {
     <div data-testid="dispatch-page">
       <PageHeader
         title="Dispatch Management"
-        description="Allocate drivers and vehicles to pending transport orders and manage active assignments."
         actions={
           canWrite && (
             <Button onClick={() => openAssign(null)} data-testid="new-assignment">
