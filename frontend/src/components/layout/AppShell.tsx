@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router'
-import { LogOut, Truck } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { modules } from '@/modules'
 import { cn } from '@/lib/utils'
@@ -7,17 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 function Brand() {
-  return (
-    <div className="flex items-center gap-2.5">
-      <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground">
-        <Truck className="size-4.5" />
-      </div>
-      <div className="leading-tight">
-        <div className="text-sm font-semibold text-sidebar-accent-foreground">Northline Freight</div>
-        <div className="text-[11px] text-sidebar-foreground/70">Transport Management</div>
-      </div>
-    </div>
-  )
+  return <img src="/logo.png" alt="Northline Freight" className="h-6 w-auto" data-testid="brand-logo" />
 }
 
 function Sidebar() {
