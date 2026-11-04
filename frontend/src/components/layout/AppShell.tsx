@@ -1,48 +1,91 @@
+import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
-import { LogOut } from 'lucide-react'
+import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { useAuth } from '@/auth/AuthContext'
 import { modules } from '@/modules'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 function Brand() {
   return <img src="/logo.png" alt="Northline Freight" className="h-5 w-auto" data-testid="brand-logo" />
 }
 
-function Sidebar() {
+const SIDEBAR_KEY = 'northline.sidebarCollapsed'
+
+/** Collapsed state of the sidebar, remembered per browser. */
+function useSidebarCollapsed() {
+  const [collapsed, setCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem(SIDEBAR_KEY) === '1'
+    } catch {
+      return false
+    }
+  })
+  const toggle = () =>
+    setCollapsed((c) => {
+      try {
+        localStorage.setItem(SIDEBAR_KEY, c ? '0' : '1')
+      } catch {
+        // Storage unavailable: keep the state for this page only.
+      }
+      return !c
+    })
+  return [collapsed, toggle] as const
+}
+
+function Sidebar({ collapsed }: { collapsed: boolean }) {
   return (
     <aside
-      className="sticky top-0 flex h-screen w-60 shrink-0 flex-col bg-sidebar text-sidebar-foreground"
+      className={cn(
+        'sticky top-0 flex h-screen shrink-0 flex-col bg-sidebar text-sidebar-foreground transition-[width] duration-200',
+        collapsed ? 'w-16' : 'w-60',
+      )}
       data-testid="sidebar"
+      data-collapsed={collapsed}
     >
-      <div className="flex h-14 items-center border-b border-sidebar-border px-4">
-        <Brand />
+      <div className={cn('flex h-14 items-center border-b border-sidebar-border', collapsed ? 'justify-center' : 'px-4')}>
+        {collapsed ? <img src="/favicon.png" alt="Northline Freight" className="size-6" data-testid="brand-logo" /> : <Brand />}
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto p-2" aria-label="Main navigation">
-        {modules.map((m) => (
-          <NavLink
-            key={m.key}
-            to={m.path}
-            data-testid={`nav-${m.key}`}
-            className={({ isActive }) =>
-              cn(
-                'flex items-center gap-3 whitespace-nowrap rounded-md px-3 py-2 text-sm transition-colors',
-                'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
-                isActive && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
-              )
-            }
-          >
-            <m.icon className="size-4 shrink-0" />
-            <span className="truncate">{m.title}</span>
-          </NavLink>
-        ))}
+        {modules.map((m) => {
+          const link = (
+            <NavLink
+              key={m.key}
+              to={m.path}
+              data-testid={`nav-${m.key}`}
+              aria-label={collapsed ? m.title : undefined}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 whitespace-nowrap rounded-md py-2 text-sm transition-colors',
+                  collapsed ? 'justify-center px-0' : 'px-3',
+                  'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+                  isActive && 'bg-sidebar-accent font-medium text-sidebar-accent-foreground',
+                )
+              }
+            >
+              <m.icon className="size-4 shrink-0" />
+              {!collapsed && <span className="truncate">{m.title}</span>}
+            </NavLink>
+          )
+          return collapsed ? (
+            <Tooltip key={m.key}>
+              <TooltipTrigger asChild>{link}</TooltipTrigger>
+              <TooltipContent side="right">{m.title}</TooltipContent>
+            </Tooltip>
+          ) : (
+            link
+          )
+        })}
       </nav>
-      <div className="border-t border-sidebar-border p-4 text-[11px] text-sidebar-foreground/60">
-        Northline Freight &amp; Logistics Ltd
-        <br />
-        Auckland, New Zealand
-      </div>
+      {!collapsed && (
+        <div className="border-t border-sidebar-border p-4 text-[11px] text-sidebar-foreground/60">
+          Northline Freight &amp; Logistics Ltd
+          <br />
+          Auckland, New Zealand
+        </div>
+      )}
     </aside>
   )
 }
@@ -71,11 +114,22 @@ export function UserMenu() {
 
 /** Layout for Admin and Dispatcher users: sidebar navigation plus workspace. */
 export function AppShell() {
+  const [collapsed, toggleSidebar] = useSidebarCollapsed()
   return (
     <div className="flex min-h-screen">
-      <Sidebar />
+      <Sidebar collapsed={collapsed} />
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-end border-b bg-card/95 px-6 backdrop-blur">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b bg-card/95 px-4 backdrop-blur md:px-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            data-testid="sidebar-toggle"
+          >
+            {collapsed ? <PanelLeftOpen className="size-5" /> : <PanelLeftClose className="size-5" />}
+          </Button>
           <UserMenu />
         </header>
         <main className="flex-1 p-4 md:p-6">
